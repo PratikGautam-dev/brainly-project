@@ -10,8 +10,8 @@ interface ButtonProps {
 }
 
 const variantClasses = {
-    "primary": "bg-purple-600 text-white",
-    "secondary": "bg-purple-200 text-purple-600",
+    "primary": "bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold py-2 px-6 rounded-lg",
+    "secondary": "bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold py-2 px-6 rounded-lg",
 };
 
 const defaultStyles = "px-4 py-2 rounded-md font-light flex items-center";

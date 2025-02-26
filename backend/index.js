@@ -26,6 +26,13 @@ const Content = mongoose.model('Content', {
     userId: String
 });
 
+// Add new Share Brain Schema
+const Share = mongoose.model('Share', {
+    userId: String,
+    hash: String,
+    active: Boolean
+});
+
 const JWT_SECRET = "secret123";
 
 const authMiddleware = (req, res, next) => {
@@ -82,6 +89,35 @@ app.post('/api/v1/content', authMiddleware, async (req, res) => {
 app.delete('/api/v1/content/:contentId', authMiddleware, async (req, res) => {
     await Content.deleteOne({ _id: req.params.contentId, userId: req.userId });
     res.json({ message: 'Content deleted successfully' });
+});
+
+// Share brain routes
+app.post('/api/v1/brain/share', authMiddleware, async (req, res) => {
+    try {
+        const hash = Math.random().toString(36).substring(2, 15);
+        const share = new Share({
+            userId: req.userId,
+            hash,
+            active: true
+        });
+        await share.save();
+        res.json({ hash });
+    } catch (error) {
+        res.status(500).json({ message: 'Error sharing brain' });
+    }
+});
+
+app.get('/api/v1/brain/:hash', async (req, res) => {
+    try {
+        const share = await Share.findOne({ hash: req.params.hash, active: true });
+        if (!share) {
+            return res.status(404).json({ message: 'Share not found' });
+        }
+        const contents = await Content.find({ userId: share.userId });
+        res.json({ content: contents });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching shared brain' });
+    }
 });
 
 app.listen(4000, () => console.log('Server is running on port 4000'));
