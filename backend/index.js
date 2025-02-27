@@ -1,3 +1,4 @@
+require('dotenv').config();
 "use strict";
 
 const express = require('express');
@@ -6,11 +7,19 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:3000', 'https://your-frontend-url.vercel.app'],
+  credentials: true
+}));
 app.use(express.json());
 
-// Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/brainly');
+// Connect to MongoDB with updated options
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log('Connected to MongoDB Atlas'))
+  .catch((err) => {
+    console.error('MongoDB connection error:', err);
+    process.exit(1);  // Exit if connection fails
+  });
 
 // User Schema
 const User = mongoose.model('User', {
@@ -33,7 +42,7 @@ const Share = mongoose.model('Share', {
     active: Boolean
 });
 
-const JWT_SECRET = "secret123";
+const JWT_SECRET = process.env.JWT_SECRET;
 
 const authMiddleware = (req, res, next) => {
     const authHeader = req.headers.authorization;
@@ -120,4 +129,4 @@ app.get('/api/v1/brain/:hash', async (req, res) => {
     }
 });
 
-app.listen(4000, () => console.log('Server is running on port 4000'));
+app.listen(process.env.PORT || 4000, () => console.log(`Server is running on port ${process.env.PORT || 4000}`));
