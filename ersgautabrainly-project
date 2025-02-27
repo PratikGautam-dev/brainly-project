@@ -1,0 +1,23 @@
+[33mcommit 1b1d37d79fee6a4421c1a8743ecbefc7623119c6[m
+Author: PratikGBihar <gautampratik483@gmail.com>
+Date:   Wed Feb 26 14:50:48 2025 +0530
+
+    Recreated project with frontend and backend
+
+[33mcommit 60596b801a1f79b4e3442d25afcc347b953d3c22[m
+Author: PratikGBihar <gautampratik483@gmail.com>
+Date:   Wed Feb 26 20:34:55 2025 +0530
+
+    Initial commit
+
+[33mcommit 22c57aaca4a72bd79829b79d4879fd0b750c8263[m
+Author: PratikGBihar <gautampratik483@gmail.com>
+Date:   Wed Feb 26 21:24:21 2025 +0530
+
+    Update configuration for Vercel deployment
+
+[33mcommit 1f03b898c5beef56a82ffdb1d7f1cae77b765783[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: PratikGBihar <gautampratik483@gmail.com>
+Date:   Wed Feb 26 21:50:59 2025 +0530
+
+    Ready for Vercel deployment
