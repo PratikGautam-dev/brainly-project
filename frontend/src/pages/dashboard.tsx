@@ -12,6 +12,7 @@ import { Feed } from "../components/Feed"
 import { BACKEND_URL } from "../config"
 import axios from "axios"
 import { ShareModal } from "../components/ShareModal"
+import { EmptyState } from "../components/EmptyState"
 
 export function Dashboard() {
     const [modalOpen, setModalOpen] = useState(false);
@@ -33,26 +34,26 @@ export function Dashboard() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+        <div className="min-h-screen bg-gray-900 text-white">
             <Sidebar />
-            <div className="pl-72 min-h-screen">
+            <div className="lg:pl-72 min-h-screen">
                 <header className="bg-gray-800/50 backdrop-blur-lg border-b border-gray-700 shadow-lg sticky top-0 z-10">
-                    <div className="px-6 py-4 flex justify-between items-center">
-                        <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
+                    <div className="px-4 lg:px-6 py-4 flex flex-col lg:flex-row justify-between items-center gap-4">
+                        <h1 className="text-xl lg:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
                             {isAuthenticated ? "Your Brain" : "Welcome to Brainly"}
                         </h1>
-                        <div className="flex space-x-4">
+                        <div className="flex flex-wrap justify-center gap-2 lg:gap-4">
                             <Button 
                                 onClick={handleAddContent}
                                 variant="primary" 
-                                text={isAuthenticated ? "Add content" : "Sign in to add content"}
+                                text={isAuthenticated ? "Add" : "Sign in"}
                                 startIcon={<PlusIcon />}
                             />
                             {isAuthenticated && (
                                 <Button 
                                     onClick={() => setShareModalOpen(true)} 
                                     variant="secondary" 
-                                    text="Share brain" 
+                                    text="Share" 
                                     startIcon={<ShareIcon />}
                                 />
                             )}
@@ -60,7 +61,7 @@ export function Dashboard() {
                     </div>
                 </header>
 
-                <main className="p-6">
+                <main className="p-4 lg:p-6">
                     {isAuthenticated ? (
                         <>
                             <CreateContentModal 
@@ -72,8 +73,20 @@ export function Dashboard() {
                                 open={shareModalOpen}
                                 onClose={() => setShareModalOpen(false)}
                             />
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                                <Feed key={refreshKey} />
+                            <div className="container mx-auto px-2 lg:px-4 py-4 lg:py-8">
+                                {contents.length === 0 ? (
+                                    <EmptyState onClick={() => setIsCreateModalOpen(true)} />
+                                ) : (
+                                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                                        {contents.map((content) => (
+                                            <Card
+                                                key={content._id}
+                                                {...content}
+                                                onDelete={fetchContents}
+                                            />
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         </>
                     ) : (

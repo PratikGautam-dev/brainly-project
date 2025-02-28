@@ -1,4 +1,4 @@
-export function PlusIcon({ className = "w-6 h-6" }) {
+export function MenuIcon({ className = "w-6 h-6" }) {
     return (
         <svg 
             className={className} 
@@ -10,7 +10,7 @@ export function PlusIcon({ className = "w-6 h-6" }) {
                 strokeLinecap="round" 
                 strokeLinejoin="round" 
                 strokeWidth={2} 
-                d="M12 4v16m8-8H4" 
+                d="M4 6h16M4 12h16M4 18h16" 
             />
         </svg>
     );
