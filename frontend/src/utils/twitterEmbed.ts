@@ -21,6 +21,7 @@ export const loadTwitterScript = (): Promise<void> => {
 export const embedTweet = (tweetUrl: string): Promise<void> => {
     return new Promise((resolve) => {
         if (window.twttr) {
+            //@ts-ignore
             window.twttr.ready(() => {
                 window.twttr.widgets.load();
                 resolve();

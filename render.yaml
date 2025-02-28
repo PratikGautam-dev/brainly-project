@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: brainly-backend
+    runtime: node
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
+    envVars:
+      - key: PORT
+        value: 4000
+      - key: NODE_VERSION
+        value: 18.12.1

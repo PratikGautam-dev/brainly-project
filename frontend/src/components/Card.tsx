@@ -8,10 +8,11 @@ import { TwitterIcon } from "../icons/TwitterIcon";
 import { InstagramIcon } from "../icons/InstagramIcon";
 
 interface CardProps {
-    id: string;
+    id?: string;
+    _id?: string;
     title: string;
     link: string;
-    type: "twitter" | "youtube" | "instagram";
+    type: "youtube" | "twitter" | "instagram";
     onDelete: () => Promise<void>;
 }
 
@@ -41,8 +42,10 @@ export function Card({id, title, link, type, onDelete}: CardProps) {
     const handleDelete = async () => {
         if (window.confirm("Are you sure you want to delete this content?")) {
             try {
-                await deleteContent(id);
-                await onDelete();
+                if (id) {
+                    await deleteContent(id);
+                    await onDelete();
+                }
             } catch (error) {
                 console.error("Delete failed:", error);
                 alert("Failed to delete content");
