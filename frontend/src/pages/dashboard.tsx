@@ -13,11 +13,14 @@ import { BACKEND_URL } from "../config"
 import axios from "axios"
 import { ShareModal } from "../components/ShareModal"
 import { EmptyState } from "../components/EmptyState"
-import { Card } from "../components/Card"
+import { Card } from "../components/Card";
 
 interface Content {
     _id: string;
-    // Add other content properties as needed
+    title: string;
+    description: string;
+    url: string;
+    type: "youtube" | "twitter" | "instagram";
 }
 
 export function Dashboard() {
@@ -105,10 +108,13 @@ export function Dashboard() {
                                 ) : (
                                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                                         {contents.map((content) => (
-                                            //@ts-ignore
                                             <Card
                                                 key={content._id}
-                                                {...content}
+                                                _id={content._id}
+                                                title={content.title}
+                                                description={content.description}
+                                                url={content.url}
+                                                type={content.type}
                                                 onDelete={fetchContents}
                                             />
                                         ))}
