@@ -10,6 +10,7 @@ app.use(cors({
   origin: [
     'http://localhost:3000',
     'https://brainly-frontend.vercel.app',
+    'https://brainly-frontend-seven.vercel.app',
     'https://brainly-frontend-l7nsejph1-pratik-gautams-projects.vercel.app'
   ],
   credentials: true
