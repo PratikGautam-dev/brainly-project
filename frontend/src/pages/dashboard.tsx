@@ -13,13 +13,39 @@ import { BACKEND_URL } from "../config"
 import axios from "axios"
 import { ShareModal } from "../components/ShareModal"
 import { EmptyState } from "../components/EmptyState"
+import { Card } from "../components/Card"
+
+interface Content {
+    _id: string;
+    // Add other content properties as needed
+}
 
 export function Dashboard() {
     const [modalOpen, setModalOpen] = useState(false);
     const [shareModalOpen, setShareModalOpen] = useState(false);
+    const [contents, setContents] = useState<Content[]>([]);
     const navigate = useNavigate();
     const [refreshKey, setRefreshKey] = useState(0);
     const isAuthenticated = !!localStorage.getItem("token");
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            fetchContents();
+        }
+    }, [refreshKey, isAuthenticated]);
+
+    const fetchContents = async () => {
+        try {
+            const response = await axios.get(`${BACKEND_URL}/api/v1/content`, {
+                headers: {
+                    Authorization: localStorage.getItem("token")
+                }
+            });
+            setContents(response.data.content);
+        } catch (error) {
+            console.error("Error fetching contents:", error);
+        }
+    };
 
     const handleContentAdded = () => {
         setRefreshKey(prev => prev + 1);
@@ -67,7 +93,7 @@ export function Dashboard() {
                             <CreateContentModal 
                                 open={modalOpen} 
                                 onClose={() => setModalOpen(false)}
-                                onContentAdded={handleContentAdded}
+                                onContentAdded={fetchContents}
                             />
                             <ShareModal 
                                 open={shareModalOpen}
@@ -75,10 +101,11 @@ export function Dashboard() {
                             />
                             <div className="container mx-auto px-2 lg:px-4 py-4 lg:py-8">
                                 {contents.length === 0 ? (
-                                    <EmptyState onClick={() => setIsCreateModalOpen(true)} />
+                                    <EmptyState onClick={() => setModalOpen(true)} />
                                 ) : (
                                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                                         {contents.map((content) => (
+                                            //@ts-ignore
                                             <Card
                                                 key={content._id}
                                                 {...content}
