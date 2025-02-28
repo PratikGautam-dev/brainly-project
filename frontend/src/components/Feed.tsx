@@ -55,7 +55,7 @@ export function Feed() {
                 filteredContent.map(content => (
                     <Card 
                         key={content._id}
-                        id={content._id}
+                        _id={content._id}     // Use _id instead of id
                         title={content.title}
                         link={content.link}
                         type={content.type}

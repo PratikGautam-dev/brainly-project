@@ -66,7 +66,10 @@ export function ShareView() {
                         {content.map(item => (
                             <Card 
                                 key={item._id}
-                                {...item}
+                                _id={item._id}
+                                title={item.title}
+                                link={item.link}
+                                type={item.type}
                                 onDelete={async () => {}}
                             />
                         ))}
