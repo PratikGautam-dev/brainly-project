@@ -81,22 +81,22 @@ export function Card({ _id, title, description, url, link, type, onDelete }: Car
 
     return (
         <div className="w-full">
-            <div className="p-4 bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl hover:bg-gray-800/70">
-                <div className="flex justify-between">
-                    <div className="flex items-center text-md text-gray-300">
-                        <div className="text-gray-400 pr-2">
+            <div className="p-3 sm:p-4 bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl hover:bg-gray-800/70">
+                <div className="flex justify-between items-start">
+                    <div className="flex items-start text-sm sm:text-md text-gray-300 gap-2">
+                        <div className="text-gray-400 shrink-0">
                             <TypeIcon />
                         </div>
-                        {title}
+                        <span className="line-clamp-2">{title}</span>
                     </div>
-                    <div className="flex items-center">
+                    <div className="flex items-center ml-2">
                         <div className="text-gray-400 cursor-pointer hover:text-red-500 transition-colors" onClick={handleDelete}>
                             <DeleteIcon />
                         </div>
                     </div>
                 </div>
 
-                <div className="pt-4 bg-gray-900/30 mt-4 rounded-lg p-4 overflow-hidden">
+                <div className="pt-3 sm:pt-4 bg-gray-900/30 mt-3 sm:mt-4 rounded-lg p-3 sm:p-4 overflow-hidden">
                     {type === "twitter" && (
                         <div className="w-full flex justify-center">
                             {isLoading && <LoadingSpinner />}

@@ -1,8 +1,11 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";
-import { BACKEND_URL } from "../config";
-import { AuthLayout } from "../components/AuthLayout";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";  // Add missing axios import
+import { BACKEND_URL } from "../config";  // Add missing BACKEND_URL import
+import { AuthLayout } from "../components/AuthLayout";  // Add missing AuthLayout import
+import { Button } from "../components/Button";
+import { Input } from "../components/Input";
+import { Logo } from "../icons/Logo";
 
 export function Signup() {
     const [username, setUsername] = useState("");

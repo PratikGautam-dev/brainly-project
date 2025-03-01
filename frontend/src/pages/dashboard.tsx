@@ -67,8 +67,8 @@ export function Dashboard() {
             <Sidebar />
             <div className="lg:pl-72 min-h-screen">
                 <header className="bg-gray-800/50 backdrop-blur-lg border-b border-gray-700 shadow-lg sticky top-0 z-10">
-                    <div className="px-4 lg:px-6 py-4 flex flex-col lg:flex-row justify-between items-center gap-4">
-                        <h1 className="text-xl lg:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
+                    <div className="px-4 sm:px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <h1 className="text-xl sm:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
                             {isAuthenticated ? "Your Brain" : "Welcome to Brainly"}
                         </h1>
                         <div className="flex flex-wrap justify-center gap-2 lg:gap-4">
@@ -90,7 +90,7 @@ export function Dashboard() {
                     </div>
                 </header>
 
-                <main className="p-4 lg:p-6">
+                <main className="p-4 sm:p-6">
                     {isAuthenticated ? (
                         <>
                             <CreateContentModal 
@@ -102,11 +102,11 @@ export function Dashboard() {
                                 open={shareModalOpen}
                                 onClose={() => setShareModalOpen(false)}
                             />
-                            <div className="container mx-auto px-2 lg:px-4 py-4 lg:py-8">
+                            <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
                                 {contents.length === 0 ? (
                                     <EmptyState onClick={() => setModalOpen(true)} />
                                 ) : (
-                                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                                         {contents.map((content) => (
                                             <Card
                                                 key={content._id}
@@ -123,16 +123,16 @@ export function Dashboard() {
                             </div>
                         </>
                     ) : (
-                        <div className="bg-gray-800/30 backdrop-blur-sm border border-gray-700 rounded-xl shadow-2xl p-12 text-center min-h-[calc(100vh-160px)] flex items-center justify-center">
+                        <div className="bg-gray-800/30 backdrop-blur-sm border border-gray-700 rounded-xl shadow-2xl p-4 sm:p-12 text-center min-h-[calc(100vh-160px)] flex items-center justify-center">
                             <div className="max-w-3xl mx-auto">
-                                <h2 className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 mb-6">
+                                <h2 className="text-3xl sm:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 mb-4 sm:mb-6">
                                     Welcome to Your Second Brain
                                 </h2>
-                                <p className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto">
+                                <p className="text-lg sm:text-xl text-gray-300 mb-8 sm:mb-12 max-w-2xl mx-auto px-4">
                                     The ultimate platform to organize and share your favorite content from across the web. 
                                     Keep all your important content in one place.
                                 </p>
-                                <div className="grid grid-cols-3 gap-8 mb-12">
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-8 mb-8 sm:mb-12 px-4">
                                     <div className="p-8 bg-gray-800/50 rounded-xl border border-gray-700 transition-all duration-300 hover:scale-105 hover:bg-gray-800/70 hover:shadow-xl group">
                                         <YoutubeIcon className="w-16 h-16 text-red-500 mx-auto mb-4 transform group-hover:scale-110 transition-transform" />
                                         <h3 className="text-lg font-semibold mb-2 text-white">YouTube Videos</h3>

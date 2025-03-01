@@ -1,9 +1,9 @@
-import { Signin } from "./pages/signin"
-import { Signup } from "./pages/signup"
+import { Signin } from "./pages/Signin"  // Updated from signin to Signin
+import { Signup } from "./pages/Signup"  // Updated from signup to Signup
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
-import { Dashboard } from "./pages/dashboard"
+import { Dashboard } from "./pages/Dashboard"
 import { FilterProvider } from "./context/FilterContext"
-import { ShareView } from "./pages/share-view"
+import { ShareView } from "./pages/ShareView"  // Updated from share-view to ShareView
 
 function App() {
   const isAuthenticated = !!localStorage.getItem("token");
