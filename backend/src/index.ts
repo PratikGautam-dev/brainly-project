@@ -1,11 +1,13 @@
 import express from 'express';
 import { config } from 'dotenv';
+import path from 'path';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import authRouter from './routes/auth';
 import contentRouter from './routes/content';
 
-config();
+// Load env from correct path
+config({ path: path.join(__dirname, '../.env') });
 
 const app = express();
 const PORT = process.env.PORT || 4000;

@@ -1,10 +1,14 @@
 services:
   - type: web
     name: brainly-backend
-    runtime: node
-    buildCommand: cd backend && npm install
-    startCommand: cd backend && npm start
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: chmod +x start.sh && ./start.sh
     envVars:
+      - key: MONGODB_URI
+        value: mongodb+srv://gautampratik483:ToX8NF7rkJk5XtGM@cluster0.a1h3q.mongodb.net/brainly?retryWrites=true&w=majority&appName=Cluster0
+      - key: JWT_SECRET
+        value: your_jwt_secret
       - key: PORT
         value: 4000
       - key: NODE_VERSION
