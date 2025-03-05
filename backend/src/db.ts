@@ -1,62 +1,56 @@
-import mongoose, { model, Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import dotenv from "dotenv";
-dotenv.config();
-const mongoUri: string = process.env.MONGODB_URI || "";
+import path from "path";
 
-if (!mongoUri) {
-  throw new Error("❌ MONGODB_URI is not defined in the environment variables");
-}
-
-mongoose
-  .connect(mongoUri) 
-  .then(() => console.log("✅ Connected to MongoDB Atlas"))
-  .catch((err) => console.error("❌ MongoDB Connection Error:", err));
-
-
-const UserSchema = new Schema({
-    username: { type: String, index: { unique: true } },
-    password: String
-});
-
-export const UserModel = model("User", UserSchema);
-const ContentSchema=new Schema({
-    title:String,
-    link:String,
-    tags:[{type:mongoose.Types.ObjectId,ref:'Tag'}],
-    type:String,
-    userId:{type:mongoose.Types.ObjectId,ref:'User',required:true}
-})
-const LinkSchema=new Schema({
-    hash:String,
-    userId:{type:mongoose.Types.ObjectId,ref:'User',required:true,unique:true},
-   
-})
-export const LinkModel=model("Links",LinkSchema)
-export const ContentModel=model("Content",ContentSchema);
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-
-dotenv.config();
+// Load environment variables with absolute path
+dotenv.config({ path: path.join(__dirname, '../.env') });
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
-if (!MONGODB_URI) {
-    console.error('MONGODB_URI is not defined in environment variables');
-    process.exit(1);
-}
+console.log('Attempting to connect with URI:', MONGODB_URI ? 'URI exists' : 'URI is undefined');
 
-export const connectDB = async () => {
+export async function connectDB() {
+    if (!MONGODB_URI) {
+        throw new Error("MONGODB_URI is not defined in environment");
+    }
+
     try {
-        console.log('Connecting to MongoDB...');
-        await mongoose.connect(MONGODB_URI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            serverSelectionTimeoutMS: 10000,
-            socketTimeoutMS: 45000,
+        const conn = await mongoose.connect(MONGODB_URI, {
+            retryWrites: true,
+            w: 'majority',
         });
-        console.log('MongoDB Connected Successfully');
+        
+        console.log(`✅ MongoDB Connected to: ${conn.connection.host}`);
+        return conn;
     } catch (error) {
-        console.error('MongoDB Connection Error:', error);
+        console.error('❌ MongoDB connection error:', error);
         process.exit(1);
     }
-};
+}
+
+// Schema definitions
+const UserSchema = new Schema({
+    username: { type: String, required: true, unique: true },
+    password: { type: String, required: true }
+});
+
+const ContentSchema = new Schema({
+    title: String,
+    link: String,
+    type: {
+        type: String,
+        enum: ['youtube', 'twitter', 'instagram'],
+        required: true
+    },
+    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true }
+});
+
+const LinkSchema = new Schema({
+    hash: String,
+    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true, unique: true }
+});
+
+// Export models
+export const User = mongoose.model('User', UserSchema);
+export const Content = mongoose.model('Content', ContentSchema);
+export const Link = mongoose.model('Link', LinkSchema);
