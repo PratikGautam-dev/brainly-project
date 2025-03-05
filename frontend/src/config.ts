@@ -1,6 +1,13 @@
-export const BACKEND_URL = process.env.NODE_ENV === 'production' 
-    ? 'https://your-production-backend-url.com'  // Update this with your actual production URL
-    : 'http://localhost:3000';  // Update this with your local backend port
+const isDevelopment = process.env.NODE_ENV === 'development';
 
-// Add this console log to verify the config is loading
-console.log("Backend URL:", BACKEND_URL);
+export const BACKEND_URL = isDevelopment 
+    ? 'http://localhost:4000'
+    : 'https://brainly-backend-tspz.onrender.com';
+
+export const API_ROUTES = {
+    signup: '/api/v1/signup',
+    signin: '/api/v1/signin'
+};
+
+console.log('Environment:', process.env.NODE_ENV);
+console.log('Using backend URL:', BACKEND_URL);

@@ -8,19 +8,45 @@ import contentRouter from './routes/content';
 config();
 
 const app = express();
-app.use(cors());
-app.use(express.json());
-
-// Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/brainly')
-    .then(() => console.log('Connected to MongoDB'))
-    .catch(err => console.error('MongoDB connection error:', err));
-
-app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/content", contentRouter);
-
 const PORT = process.env.PORT || 4000;
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+// Debug middleware
+app.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+    next();
 });
+
+app.use(cors({
+    origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+    credentials: true
+}));
+
+app.use(express.json());
+
+// Connect to MongoDB with options
+mongoose.connect(process.env.MONGODB_URI!, {
+    serverSelectionTimeoutMS: 5000,
+    socketTimeoutMS: 45000,
+})
+.then(() => {
+    console.log('Connected to MongoDB Atlas');
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+        console.log('Available routes:');
+        console.log('- POST /api/v1/signup');
+        console.log('- POST /api/v1/signin');
+    });
+})
+.catch(err => {
+    console.error('MongoDB connection error:', err);
+    process.exit(1);
+});
+
+// Test route
+app.get('/test', (req, res) => {
+    res.json({ message: 'Server is running' });
+});
+
+// Routes - note the path change
+app.use('/api/v1', authRouter);  // Changed from /api/v1/auth
+app.use('/api/v1/content', contentRouter);

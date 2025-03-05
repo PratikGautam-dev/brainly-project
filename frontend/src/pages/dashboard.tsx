@@ -67,30 +67,30 @@ export function Dashboard() {
             <Sidebar />
             <div className="lg:pl-72 min-h-screen">
                 <header className="bg-gray-800/50 backdrop-blur-lg border-b border-gray-700 shadow-lg sticky top-0 z-10">
-                    <div className="px-4 sm:px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
-                        <h1 className="text-xl sm:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
+                    <div className="px-4 lg:px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <h1 className="text-xl lg:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
                             {isAuthenticated ? "Your Brain" : "Welcome to Brainly"}
                         </h1>
-                        <div className="flex flex-wrap justify-center gap-2 lg:gap-4">
+                        <div className="flex flex-wrap justify-center gap-2 sm:gap-4">
                             <Button 
                                 onClick={handleAddContent}
                                 variant="primary" 
-                                text={isAuthenticated ? "Add" : "Sign in"}
-                                startIcon={<PlusIcon />}
+                                text={isAuthenticated ? "+" : "Sign in"}
+                                className="px-4 sm:px-6"
                             />
                             {isAuthenticated && (
                                 <Button 
                                     onClick={() => setShareModalOpen(true)} 
                                     variant="secondary" 
-                                    text="Share" 
-                                    startIcon={<ShareIcon />}
+                                    text="Share"
+                                    className="px-4 sm:px-6"
                                 />
                             )}
                         </div>
                     </div>
                 </header>
 
-                <main className="p-4 sm:p-6">
+                <main className="p-3 sm:p-6">
                     {isAuthenticated ? (
                         <>
                             <CreateContentModal 

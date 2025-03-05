@@ -1,11 +1,8 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";  // Add missing axios import
-import { BACKEND_URL } from "../config";  // Add missing BACKEND_URL import
-import { AuthLayout } from "../components/AuthLayout";  // Add missing AuthLayout import
-import { Button } from "../components/Button";
-import { Input } from "../components/Input";
-import { Logo } from "../icons/Logo";
+import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
+import { BACKEND_URL, API_ROUTES } from "../config";
+import { AuthLayout } from "../components/AuthLayout";
 
 export function Signup() {
     const [username, setUsername] = useState("");
@@ -24,12 +21,18 @@ export function Signup() {
         }
 
         try {
-            await axios.post(`${BACKEND_URL}/api/v1/signup`, {
+            const response = await axios.post(`${BACKEND_URL}${API_ROUTES.signup}`, {
                 username,
                 password
+            }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             });
+            console.log('Signup response:', response.data);
             navigate("/signin");
         } catch (error: any) {
+            console.error('Signup error:', error);
             setError(error.response?.data?.message || "Error creating account");
         }
     }
