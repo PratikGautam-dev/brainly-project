@@ -5,40 +5,30 @@ import authRouter from './routes/auth';
 import contentRouter from './routes/content';
 import { errorHandler } from './middleware/errorHandler';
 
-const startServer = async () => {
-    try {
-        // Connect to MongoDB first
-        await connectDB();
-        
-        const app = express();
-        const PORT = parseInt(process.env.PORT as string, 10) || 4000;
+const app = express();
+const PORT = process.env.PORT || 4000;
 
-        // Middleware
-        app.use(cors({
-            origin: [
-                'http://localhost:5173',
-                'http://localhost:3000',
-                'https://brainly-project.vercel.app'
-            ],
-            credentials: true
-        }));
-        app.use(express.json());
+app.use(cors());
+app.use(express.json());
 
-        // Routes
-        app.use('/api/v1', authRouter);
-        app.use('/api/v1/content', contentRouter);
+// Routes
+app.use('/api/v1', authRouter);
+app.use('/api/v1/content', contentRouter);
 
-        // Error handler
-        app.use(errorHandler);
+// Health check
+app.get('/health', (_, res) => res.json({ status: 'ok' }));
 
-        // Start server
+// Error handler
+app.use(errorHandler);
+
+// Connect to MongoDB and start server
+connectDB()
+    .then(() => {
         app.listen(PORT, '0.0.0.0', () => {
             console.log(`Server running on port ${PORT}`);
         });
-    } catch (error) {
-        console.error('Server failed to start:', error);
+    })
+    .catch(err => {
+        console.error('Failed to start server:', err);
         process.exit(1);
-    }
-};
-
-startServer();
+    });
