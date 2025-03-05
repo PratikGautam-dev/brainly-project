@@ -6,35 +6,34 @@ async function startServer() {
     const app = express();
     const PORT = process.env.PORT || 4000;
 
-    // Updated CORS settings
     app.use(cors({
-        origin: [
-            'http://localhost:5173',
-            'http://localhost:3000',
-            'https://brainly-project.vercel.app',
-            'https://brainly-frontend.vercel.app'
-        ],
-        credentials: true,
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+        origin: '*',  // Allow all origins temporarily for testing
+        credentials: true
     }));
     app.use(express.json());
 
-    // Health check
-    app.get('/health', (req, res) => {
-        res.json({ status: 'ok', timestamp: new Date().toISOString() });
+    // Health check endpoint
+    app.get('/health', (_, res) => {
+        res.json({ status: 'ok', time: new Date().toISOString() });
     });
 
-    // MongoDB connection check
-    let isConnected = false;
-    
-    while (!isConnected) {
-        console.log('Attempting to connect to MongoDB...');
-        isConnected = await connectDB();
+    // Try connecting to MongoDB with retries
+    let retries = 5;
+    while (retries > 0) {
+        const connected = await connectDB();
+        if (connected) break;
         
-        if (!isConnected) {
-            console.log('Retrying in 5 seconds...');
-            await new Promise(resolve => setTimeout(resolve, 5000));
+        console.log(`Connection failed. Retries left: ${retries - 1}`);
+        retries--;
+        
+        if (retries > 0) {
+            await new Promise(resolve => setTimeout(resolve, 10000)); // Wait 10 seconds
         }
+    }
+
+    if (retries === 0) {
+        console.error('Failed to connect to MongoDB after multiple attempts');
+        process.exit(1);
     }
 
     // Routes
@@ -42,8 +41,11 @@ async function startServer() {
     app.use('/api/v1/content', require('./routes/content').default);
 
     app.listen(PORT, '0.0.0.0', () => {
-        console.log(`Server is running on port ${PORT}`);
+        console.log(`🚀 Server running on port ${PORT}`);
     });
 }
 
-startServer().catch(console.error);
+startServer().catch(error => {
+    console.error('Fatal error:', error);
+    process.exit(1);
+});
