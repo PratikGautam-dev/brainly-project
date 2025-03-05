@@ -1,16 +1,30 @@
 import mongoose from "mongoose";
 
-const MONGODB_URI = "mongodb+srv://gautampratik483:ToX8NF7rkJk5XtGM@cluster0.a1h3q.mongodb.net/brainly?retryWrites=true&w=majority";
+const uri = "mongodb+srv://gautampratik483:ToX8NF7rkJk5XtGM@cluster0.a1h3q.mongodb.net/brainly?retryWrites=true&w=majority";
 
 export async function connectDB() {
+    console.log('MongoDB URI:', uri.replace(/:([^:@]{24})@/, ':****@')); // Log URI safely
+    
     try {
-        console.log('Connecting to MongoDB...');
-        const conn = await mongoose.connect(MONGODB_URI);
-        console.log('MongoDB Connected:', conn.connection.host);
-        return conn;
-    } catch (error) {
-        console.error('MongoDB connection error:', error);
-        process.exit(1);
+        mongoose.set('strictQuery', false);
+        const connection = await mongoose.connect(uri, {
+            serverSelectionTimeoutMS: 30000,
+            socketTimeoutMS: 30000,
+        });
+        
+        if (connection.connection.readyState === 1) {
+            console.log('MongoDB Connected Successfully');
+            return true;
+        }
+        
+        throw new Error('MongoDB connection failed');
+    } catch (error: any) {
+        console.error('MongoDB Connection Error:', {
+            message: error.message,
+            code: error.code,
+            name: error.name
+        });
+        return false;
     }
 }
 

@@ -1,34 +1,42 @@
 import express from 'express';
 import cors from 'cors';
 import { connectDB } from './db';
-import authRouter from './routes/auth';
-import contentRouter from './routes/content';
-import { errorHandler } from './middleware/errorHandler';
 
-const app = express();
-const PORT = process.env.PORT || 4000;
+async function startServer() {
+    const app = express();
+    const PORT = process.env.PORT || 4000;
 
-app.use(cors());
-app.use(express.json());
+    app.use(cors({
+        origin: '*',
+        credentials: true
+    }));
+    app.use(express.json());
 
-// Routes
-app.use('/api/v1', authRouter);
-app.use('/api/v1/content', contentRouter);
-
-// Health check
-app.get('/health', (_, res) => res.json({ status: 'ok' }));
-
-// Error handler
-app.use(errorHandler);
-
-// Connect to MongoDB and start server
-connectDB()
-    .then(() => {
-        app.listen(PORT, '0.0.0.0', () => {
-            console.log(`Server running on port ${PORT}`);
-        });
-    })
-    .catch(err => {
-        console.error('Failed to start server:', err);
-        process.exit(1);
+    // Health check
+    app.get('/health', (req, res) => {
+        res.json({ status: 'ok', timestamp: new Date().toISOString() });
     });
+
+    // MongoDB connection check
+    let isConnected = false;
+    
+    while (!isConnected) {
+        console.log('Attempting to connect to MongoDB...');
+        isConnected = await connectDB();
+        
+        if (!isConnected) {
+            console.log('Retrying in 5 seconds...');
+            await new Promise(resolve => setTimeout(resolve, 5000));
+        }
+    }
+
+    // Routes
+    app.use('/api/v1', require('./routes/auth').default);
+    app.use('/api/v1/content', require('./routes/content').default);
+
+    app.listen(PORT, '0.0.0.0', () => {
+        console.log(`Server is running on port ${PORT}`);
+    });
+}
+
+startServer().catch(console.error);
