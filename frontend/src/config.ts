@@ -1,8 +1,6 @@
-const isDevelopment = process.env.NODE_ENV === 'development';
-
-export const BACKEND_URL = isDevelopment 
-    ? 'http://localhost:4000'
-    : 'https://brainly-backend-tspz.onrender.com';
+export const BACKEND_URL = process.env.NODE_ENV === 'production'
+    ? 'https://brainly-backend-tspz.onrender.com'
+    : 'http://localhost:4000';
 
 export const API_ROUTES = {
     signup: '/api/v1/signup',

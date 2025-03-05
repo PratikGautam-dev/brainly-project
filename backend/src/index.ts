@@ -10,6 +10,10 @@ config();
 const app = express();
 const PORT = process.env.PORT || 4000;
 
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/brainly';
+
+console.log('Attempting to connect to MongoDB with URI:', MONGODB_URI.replace(/\/\/([^:]+):([^@]+)@/, '//<username>:<hidden>@'));
+
 // Debug middleware
 app.use((req, res, next) => {
     console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
@@ -24,9 +28,14 @@ app.use(cors({
 app.use(express.json());
 
 // Connect to MongoDB with options
-mongoose.connect(process.env.MONGODB_URI!, {
+mongoose.connect(MONGODB_URI, {
     serverSelectionTimeoutMS: 5000,
     socketTimeoutMS: 45000,
+    retryWrites: true,
+    w: 'majority',
+    writeConcern: {
+        wtimeout: 2500
+    }
 })
 .then(() => {
     console.log('Connected to MongoDB Atlas');
