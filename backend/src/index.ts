@@ -6,9 +6,16 @@ async function startServer() {
     const app = express();
     const PORT = process.env.PORT || 4000;
 
+    // Updated CORS settings
     app.use(cors({
-        origin: '*',
-        credentials: true
+        origin: [
+            'http://localhost:5173',
+            'http://localhost:3000',
+            'https://brainly-project.vercel.app',
+            'https://brainly-frontend.vercel.app'
+        ],
+        credentials: true,
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
     }));
     app.use(express.json());
 

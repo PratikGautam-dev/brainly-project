@@ -21,6 +21,7 @@ export function Signup() {
         }
 
         try {
+            console.log('Making signup request to:', `${BACKEND_URL}${API_ROUTES.signup}`);
             const response = await axios.post(`${BACKEND_URL}${API_ROUTES.signup}`, {
                 username,
                 password
@@ -29,10 +30,15 @@ export function Signup() {
                     'Content-Type': 'application/json'
                 }
             });
-            console.log('Signup response:', response.data);
+            
+            console.log('Signup successful:', response.data);
             navigate("/signin");
         } catch (error: any) {
-            console.error('Signup error:', error);
+            console.error('Signup error:', {
+                message: error.message,
+                response: error.response?.data,
+                status: error.response?.status
+            });
             setError(error.response?.data?.message || "Error creating account");
         }
     }
