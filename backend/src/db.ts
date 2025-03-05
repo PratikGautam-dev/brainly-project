@@ -1,6 +1,17 @@
 import mongoose, { model, Schema } from "mongoose";
+import dotenv from "dotenv";
+dotenv.config();
+const mongoUri: string = process.env.MONGODB_URI || "";
 
-mongoose.connect("mongodb://127.0.0.1:27017/brainly");
+if (!mongoUri) {
+  throw new Error("❌ MONGODB_URI is not defined in the environment variables");
+}
+
+mongoose
+  .connect(mongoUri) 
+  .then(() => console.log("✅ Connected to MongoDB Atlas"))
+  .catch((err) => console.error("❌ MongoDB Connection Error:", err));
+
 
 const UserSchema = new Schema({
     username: { type: String, index: { unique: true } },
