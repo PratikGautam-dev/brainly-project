@@ -1,5 +1,5 @@
-import { Signin } from "./pages/signin"  // Updated from signin to Signin
-import { Signup } from "./pages/Signup"  // Updated from signup to Signup
+import { Signup } from "./pages/Signup";  // ✅ Matches Signup.tsx
+import { Signin } from "./pages/Signin";  // ✅ Matches Signin.tsx
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import { Dashboard } from "./pages/dashboard"
 import { FilterProvider } from "./context/FilterContext"
