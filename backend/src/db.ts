@@ -1,16 +1,22 @@
 import mongoose, { Schema, model } from "mongoose";
 
-const MONGODB_URI = "mongodb+srv://pratik:pratik%40123@cluster0.ret80.mongodb.net/brainly";
+// Hardcoded MongoDB URI for testing
+const MONGODB_URI = "mongodb+srv://pratik:pratik%40123@cluster0.ret80.mongodb.net/brainly?retryWrites=true&w=majority";
 
 export const connectDB = async () => {
     try {
-        console.log('Connecting to MongoDB...');
-        const conn = await mongoose.connect(MONGODB_URI);
-        console.log('Connected to MongoDB:', conn.connection.name);
-        return conn;
+        await mongoose.connect(MONGODB_URI, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            serverSelectionTimeoutMS: 5000,
+            directConnection: true,
+            family: 4,
+        });
+        console.log('MongoDB Connected');
+        return mongoose.connection;
     } catch (error) {
         console.error('MongoDB connection error:', error);
-        process.exit(1);
+        throw error;
     }
 };
 
