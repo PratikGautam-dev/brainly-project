@@ -1,44 +1,34 @@
 import express from 'express';
 import cors from 'cors';
-import { connectDB } from './db';
+import mongoose from 'mongoose';
 
 const app = express();
-const PORT = process.env.PORT || 4000;
 
-// Add Vercel-specific CORS settings
 app.use(cors({
-    origin: [
-        'http://localhost:5173',
-        'https://brainly-project.vercel.app',
-        'https://brainly-frontend.vercel.app'
-    ],
+    origin: ['https://brainly-project.vercel.app', 'http://localhost:5173'],
     credentials: true
 }));
 
 app.use(express.json());
 
-// Health check for Vercel
-app.get('/api/health', (_, res) => {
-    res.json({ status: 'ok', deployment: 'Vercel' });
+// Test route
+app.get('/api/test', (_, res) => {
+    res.json({ status: 'ok' });
 });
 
-// Start server
-connectDB().then(() => {
-    app.use('/api/v1', require('./routes/auth').default);
-    
-    if (process.env.VERCEL) {
-        // Export for Vercel serverless deployment
-        module.exports = app;
-    } else {
-        // Start server for local development
-        app.listen(PORT, '0.0.0.0', () => {
-            console.log(`Server running on port ${PORT}`);
-        });
-    }
-}).catch(error => {
-    console.error('Failed to start:', error);
-    process.exit(1);
-});
+// Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URI!)
+    .then(() => console.log('Connected to MongoDB'))
+    .catch(err => console.error('MongoDB connection error:', err));
 
-// Export for Vercel
-export default app;
+// Routes
+const authRouter = require('./routes/auth').default;
+app.use('/api/v1', authRouter);
+
+// Export for Vercel serverless deployment
+module.exports = app;
+
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(4000, () => console.log('Local server running on port 4000'));
+}
