@@ -1,22 +1,15 @@
 import mongoose, { Schema, model } from "mongoose";
 
-// Hardcoded MongoDB URI for testing
-const MONGODB_URI = "mongodb+srv://pratik:pratik%40123@cluster0.ret80.mongodb.net/brainly?retryWrites=true&w=majority";
+const MONGODB_URI = process.env.MONGODB_URI || '';
 
 export const connectDB = async () => {
     try {
-        await mongoose.connect(MONGODB_URI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            serverSelectionTimeoutMS: 5000,
-            directConnection: true,
-            family: 4,
-        });
-        console.log('MongoDB Connected');
-        return mongoose.connection;
+        await mongoose.connect(MONGODB_URI);
+        console.log('✅ MongoDB Connected');
+        return true;
     } catch (error) {
-        console.error('MongoDB connection error:', error);
-        throw error;
+        console.error('❌ MongoDB connection failed:', error);
+        return false;
     }
 };
 

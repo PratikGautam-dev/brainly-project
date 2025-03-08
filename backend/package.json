@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node --tls-min-v1.0 index.js",
-    "dev": "set NODE_OPTIONS=--tls-min-v1.0 && nodemon index.js",
+    "start": "node dist/index.js",
+    "build": "tsc",
+    "dev": "nodemon --exec ts-node src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "vercel-build": "tsc"
   },
@@ -27,6 +28,6 @@
     "nodemon": "^3.1.9"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": "18.x"
   }
 }

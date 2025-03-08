@@ -5,33 +5,40 @@ import { connectDB } from './db';
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-app.use(cors());
+app.use(cors({
+    origin: [
+        'http://localhost:5173',
+        'https://brainly-project.vercel.app'
+    ],
+    credentials: true
+}));
+
 app.use(express.json());
 
-// Basic test route
+// Test route
 app.get('/test', (_, res) => {
-    res.json({ status: 'ok' });
+    res.json({ message: 'Server is running' });
 });
 
-// Import routes after MongoDB connection
-async function initializeServer() {
+// Start server
+async function startServer() {
     try {
-        await connectDB();
-        
-        // Import routes after successful connection
+        const connected = await connectDB();
+        if (!connected) {
+            throw new Error('Database connection failed');
+        }
+
+        // Routes
         const authRouter = require('./routes/auth').default;
-        const contentRouter = require('./routes/content').default;
-        
         app.use('/api/v1', authRouter);
-        app.use('/api/v1/content', contentRouter);
-        
+
         app.listen(PORT, '0.0.0.0', () => {
             console.log(`Server running on port ${PORT}`);
         });
     } catch (error) {
-        console.error('Failed to start server:', error);
+        console.error('Server failed to start:', error);
         process.exit(1);
     }
 }
 
-initializeServer();
+startServer();
