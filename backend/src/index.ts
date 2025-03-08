@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
+import { User } from './models/user';
+import jwt from 'jsonwebtoken';
 
 const app = express();
 
@@ -43,20 +45,43 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
-// Simple test route
-app.get('/api/test', (_, res) => {
+// Test route
+app.get('/test', (_, res) => {
     res.json({ status: 'ok' });
 });
 
-// Connect to MongoDB
-const MONGODB_URI = "mongodb+srv://gautampratik483:X2g8OlZls62TlEk5@cluster0.a1h3q.mongodb.net/brainly";
+// Auth routes
+app.post('/api/v1/signup', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        const user = new User({ username, password });
+        await user.save();
+        res.json({ message: "User created successfully" });
+    } catch (error) {
+        res.status(500).json({ message: "Error creating user" });
+    }
+});
 
-mongoose.connect(MONGODB_URI)
+app.post('/api/v1/signin', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        const user = await User.findOne({ username, password });
+        
+        if (!user) {
+            return res.status(401).json({ message: "Invalid credentials" });
+        }
+
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET || 'secret');
+        res.json({ token });
+    } catch (error) {
+        res.status(500).json({ message: "Error signing in" });
+    }
+});
+
+// Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URI!)
     .then(() => {
         console.log('Connected to MongoDB');
-        // Import routes after DB connection
-        const authRouter = require('./routes/auth').default;
-        app.use('/api/v1', authRouter);
     })
     .catch(err => {
         console.error('MongoDB connection error:', err);
