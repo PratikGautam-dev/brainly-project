@@ -16,7 +16,7 @@ app.use(cors({
     credentials: true,
     preflightContinue: false,
     optionsSuccessStatus: 204
-}));
+})); // Add semicolon here
 
 // Add headers middleware
 app.use((req, res, next) => {
@@ -29,7 +29,7 @@ app.use((req, res, next) => {
         return res.status(200).end();
     }
     next();
-}));
+}); // Add semicolon here
 
 app.use(express.json());
 
