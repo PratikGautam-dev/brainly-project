@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import { BACKEND_URL, API_ROUTES } from "../config";
+import { BACKEND_URL } from "../config";
 import { AuthLayout } from "../components/AuthLayout";
 
 export function Signup() {
@@ -21,24 +21,12 @@ export function Signup() {
         }
 
         try {
-            console.log('Making signup request to:', `${BACKEND_URL}${API_ROUTES.signup}`);
-            const response = await axios.post(`${BACKEND_URL}${API_ROUTES.signup}`, {
+            await axios.post(`${BACKEND_URL}/api/v1/signup`, {
                 username,
                 password
-            }, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
             });
-            
-            console.log('Signup successful:', response.data);
             navigate("/signin");
         } catch (error: any) {
-            console.error('Signup error:', {
-                message: error.message,
-                response: error.response?.data,
-                status: error.response?.status
-            });
             setError(error.response?.data?.message || "Error creating account");
         }
     }

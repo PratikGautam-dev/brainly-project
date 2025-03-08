@@ -1,65 +1,39 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
 
-// Hardcode the connection string for now to debug the issue
-const MONGODB_URL = "mongodb+srv://gautampratik483:ToX8NF7rkJk5XtGM@cluster0.a1h3q.mongodb.net/brainly?retryWrites=true&w=majority";
+const MONGODB_URI = "mongodb+srv://pratik:pratik%40123@cluster0.ret80.mongodb.net/brainly";
 
-export async function connectDB() {
+export const connectDB = async () => {
     try {
-        console.log('Attempting MongoDB connection...');
-        
-        // Clear any existing connections
-        await mongoose.disconnect();
-        
-        // Set up MongoDB connection options
-        const options = {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            serverSelectionTimeoutMS: 50000,
-            socketTimeoutMS: 50000,
-            family: 4  // Force IPv4
-        };
-
-        // Connect with explicit options
-        const connection = await mongoose.connect(MONGODB_URL, options);
-        
-        // Verify connection
-        await connection.connection.db.admin().ping();
-        
-        console.log('✅ MongoDB Connected to:', connection.connection.host);
-        return true;
-    } catch (error: any) {
-        console.error('❌ MongoDB Connection Error:', {
-            message: error.message,
-            name: error.name,
-            code: error.code
-        });
-        return false;
+        console.log('Connecting to MongoDB...');
+        const conn = await mongoose.connect(MONGODB_URI);
+        console.log('Connected to MongoDB:', conn.connection.name);
+        return conn;
+    } catch (error) {
+        console.error('MongoDB connection error:', error);
+        process.exit(1);
     }
-}
+};
 
 // Schema definitions
-const UserSchema = new mongoose.Schema({
+const UserSchema = new Schema({
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true }
 });
 
-const ContentSchema = new mongoose.Schema({
+export const UserModel = model("User", UserSchema);
+
+const ContentSchema = new Schema({
     title: String,
     link: String,
-    type: {
-        type: String,
-        enum: ['youtube', 'twitter', 'instagram'],
-        required: true
-    },
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
+    tags: [{ type: mongoose.Types.ObjectId, ref: 'Tag' }],
+    type: String,
+    userId: { type: mongoose.Types.ObjectId, ref: 'User', required: true }
 });
 
-const LinkSchema = new mongoose.Schema({
+const LinkSchema = new Schema({
     hash: String,
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, unique: true }
+    userId: { type: mongoose.Types.ObjectId, ref: 'User', required: true, unique: true },
 });
 
-// Export models
-export const User = mongoose.model('User', UserSchema);
-export const Content = mongoose.model('Content', ContentSchema);
-export const Link = mongoose.model('Link', LinkSchema);
+export const LinkModel = model("Links", LinkSchema);
+export const ContentModel = model("Content", ContentSchema);

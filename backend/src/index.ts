@@ -1,51 +1,25 @@
 import express from 'express';
 import cors from 'cors';
 import { connectDB } from './db';
+import authRouter from './routes/auth';
+import contentRouter from './routes/content';
 
-async function startServer() {
-    const app = express();
-    const PORT = process.env.PORT || 4000;
+const app = express();
+const PORT = parseInt(process.env.PORT as string, 10) || 4000;
 
-    app.use(cors({
-        origin: '*',  // Allow all origins temporarily for testing
-        credentials: true
-    }));
-    app.use(express.json());
+app.use(cors());
+app.use(express.json());
 
-    // Health check endpoint
-    app.get('/health', (_, res) => {
-        res.json({ status: 'ok', time: new Date().toISOString() });
-    });
+// Routes
+app.use('/api/v1', authRouter);
+app.use('/api/v1/content', contentRouter);
 
-    // Try connecting to MongoDB with retries
-    let retries = 5;
-    while (retries > 0) {
-        const connected = await connectDB();
-        if (connected) break;
-        
-        console.log(`Connection failed. Retries left: ${retries - 1}`);
-        retries--;
-        
-        if (retries > 0) {
-            await new Promise(resolve => setTimeout(resolve, 10000)); // Wait 10 seconds
-        }
-    }
-
-    if (retries === 0) {
-        console.error('Failed to connect to MongoDB after multiple attempts');
-        process.exit(1);
-    }
-
-    // Routes
-    app.use('/api/v1', require('./routes/auth').default);
-    app.use('/api/v1/content', require('./routes/content').default);
-
+// Start server
+connectDB().then(() => {
     app.listen(PORT, '0.0.0.0', () => {
-        console.log(`🚀 Server running on port ${PORT}`);
+        console.log(`Server running on port ${PORT}`);
     });
-}
-
-startServer().catch(error => {
-    console.error('Fatal error:', error);
+}).catch(err => {
+    console.error('Server failed to start:', err);
     process.exit(1);
 });
