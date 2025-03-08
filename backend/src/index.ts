@@ -11,24 +11,23 @@ app.use(cors({
 
 app.use(express.json());
 
-// Test route
+// Simple test route
 app.get('/api/test', (_, res) => {
     res.json({ status: 'ok' });
 });
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI!)
-    .then(() => console.log('Connected to MongoDB'))
-    .catch(err => console.error('MongoDB connection error:', err));
+const MONGODB_URI = "mongodb+srv://gautampratik483:X2g8OlZls62TlEk5@cluster0.a1h3q.mongodb.net/brainly";
 
-// Routes
-const authRouter = require('./routes/auth').default;
-app.use('/api/v1', authRouter);
+mongoose.connect(MONGODB_URI)
+    .then(() => {
+        console.log('Connected to MongoDB');
+        // Import routes after DB connection
+        const authRouter = require('./routes/auth').default;
+        app.use('/api/v1', authRouter);
+    })
+    .catch(err => {
+        console.error('MongoDB connection error:', err);
+    });
 
-// Export for Vercel serverless deployment
-module.exports = app;
-
-// For local development
-if (process.env.NODE_ENV !== 'production') {
-    app.listen(4000, () => console.log('Local server running on port 4000'));
-}
+export default app;
