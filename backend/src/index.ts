@@ -4,19 +4,29 @@ import mongoose from 'mongoose';
 
 const app = express();
 
-// Updated CORS configuration
+// Updated allowed origins
+const allowedOrigins = [
+    'https://brainly-frontend-seven.vercel.app',
+    'https://brainly-project.vercel.app',
+    'http://localhost:5173'
+];
+
+// CORS configuration
 app.use(cors({
-    origin: [
-        'https://brainly-project.vercel.app',
-        'https://brainly-frontend.vercel.app',
-        'http://localhost:5173'
-    ],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    origin: function(origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true,
-    preflightContinue: false,
-    optionsSuccessStatus: 204
-})); // Add semicolon here
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// Pre-flight requests
+app.options('*', cors());
 
 // Add headers middleware
 app.use((req, res, next) => {
@@ -29,7 +39,7 @@ app.use((req, res, next) => {
         return res.status(200).end();
     }
     next();
-}); // Add semicolon here
+});
 
 app.use(express.json());
 
