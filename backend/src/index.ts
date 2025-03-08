@@ -5,40 +5,40 @@ import { connectDB } from './db';
 const app = express();
 const PORT = process.env.PORT || 4000;
 
+// Add Vercel-specific CORS settings
 app.use(cors({
     origin: [
         'http://localhost:5173',
-        'https://brainly-project.vercel.app'
+        'https://brainly-project.vercel.app',
+        'https://brainly-frontend.vercel.app'
     ],
     credentials: true
 }));
 
 app.use(express.json());
 
-// Test route
-app.get('/test', (_, res) => {
-    res.json({ message: 'Server is running' });
+// Health check for Vercel
+app.get('/api/health', (_, res) => {
+    res.json({ status: 'ok', deployment: 'Vercel' });
 });
 
 // Start server
-async function startServer() {
-    try {
-        const connected = await connectDB();
-        if (!connected) {
-            throw new Error('Database connection failed');
-        }
-
-        // Routes
-        const authRouter = require('./routes/auth').default;
-        app.use('/api/v1', authRouter);
-
+connectDB().then(() => {
+    app.use('/api/v1', require('./routes/auth').default);
+    
+    if (process.env.VERCEL) {
+        // Export for Vercel serverless deployment
+        module.exports = app;
+    } else {
+        // Start server for local development
         app.listen(PORT, '0.0.0.0', () => {
             console.log(`Server running on port ${PORT}`);
         });
-    } catch (error) {
-        console.error('Server failed to start:', error);
-        process.exit(1);
     }
-}
+}).catch(error => {
+    console.error('Failed to start:', error);
+    process.exit(1);
+});
 
-startServer();
+// Export for Vercel
+export default app;
