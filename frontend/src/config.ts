@@ -1,5 +1,5 @@
 export const BACKEND_URL = process.env.NODE_ENV === 'production'
-    ? 'https://brainly-backend-kova.vercel.app'
+    ? 'https://brainly-backend-alpha.vercel.app'
     : 'http://localhost:4000';
 
 export const API_ROUTES = {
