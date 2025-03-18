@@ -51,6 +51,11 @@ app.get('/test', (_, res) => {
     res.json({ status: 'ok' });
 });
 
+// Health check route
+app.get('/health', (_, res) => {
+    res.status(200).json({ status: 'Backend is running' });
+});
+
 // Auth routes
 app.use('/api/v1', authRouter);
 
