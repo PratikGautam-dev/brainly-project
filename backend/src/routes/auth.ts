@@ -1,6 +1,6 @@
 import { Router } from "express";
 import jwt from "jsonwebtoken";
-import { User } from "../models/user";
+import { UserModel } from "../db";
 
 const router = Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
@@ -8,7 +8,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 router.post("/signup", async (req, res) => {
     try {
         const { username, password } = req.body;
-        const user = new User({ username, password });
+        const user = new UserModel({ username, password });
         await user.save();
         res.json({ message: "User created successfully" });
     } catch (error) {
@@ -19,7 +19,7 @@ router.post("/signup", async (req, res) => {
 router.post("/signin", async (req, res) => {
     try {
         const { username, password } = req.body;
-        const user = await User.findOne({ username, password });
+        const user = await UserModel.findOne({ username, password });
         
         if (!user) {
             return res.status(401).json({ message: "Invalid credentials" });

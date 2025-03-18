@@ -1,9 +1,7 @@
-import { useRef, useState } from "react";
-import { Button } from "../components/Button";
-import { Input } from "../components/Input";
-import { BACKEND_URL } from "../config";
-import axios from "axios";
+import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
+import { BACKEND_URL, API_ROUTES } from "../config";
 import { AuthLayout } from "../components/AuthLayout";
 
 export function Signin() {
@@ -19,7 +17,7 @@ export function Signin() {
         setIsLoading(true);
 
         try {
-            const response = await axios.post(`${BACKEND_URL}/api/v1/signin`, {
+            const response = await axios.post(`${BACKEND_URL}${API_ROUTES.signin}`, {
                 username,
                 password
             });

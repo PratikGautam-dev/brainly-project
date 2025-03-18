@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import { BACKEND_URL } from "../config";
+import { BACKEND_URL, API_ROUTES } from "../config";
 import { AuthLayout } from "../components/AuthLayout";
 
 export function Signup() {
@@ -21,7 +21,7 @@ export function Signup() {
         }
 
         try {
-            await axios.post(`${BACKEND_URL}/api/v1/signup`, {
+            await axios.post(`${BACKEND_URL}${API_ROUTES.signup}`, {
                 username,
                 password
             });
