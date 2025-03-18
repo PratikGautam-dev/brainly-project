@@ -3,6 +3,7 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import authRouter from './routes/auth';
 import contentRouter from './routes/content';
+import { Request, Response, NextFunction } from 'express';
 
 const app = express();
 
@@ -64,5 +65,16 @@ mongoose.connect(process.env.MONGODB_URI!)
     .catch(err => {
         console.error('MongoDB connection error:', err);
     });
+
+// Error handling middleware
+interface Error {
+    message?: string;
+    status?: number;
+}
+
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+    console.error('Error:', err);
+    res.status(err.status || 500).json({ message: err.message || 'Internal server error' });
+});
 
 export default app;
